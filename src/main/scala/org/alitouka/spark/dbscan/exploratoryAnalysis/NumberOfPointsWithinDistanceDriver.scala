@@ -26,7 +26,7 @@ object NumberOfPointsWithinDistanceDriver {
     with NumberOfPointsInPartitionParsing[Args]
 
 
-  def main (args: Array[String]) {
+  def main (args: Array[String]) : Unit = {
     val argsParser = new ArgsParser ()
 
     if (argsParser.parse(args)) {
@@ -44,7 +44,7 @@ object NumberOfPointsWithinDistanceDriver {
         .withDistanceMeasure(argsParser.args.distanceMeasure)
 
       val partitioningSettings = new PartitioningSettings (numberOfPointsInBox = argsParser.args.numberOfPoints)
-      
+
       val histogram = createNumberOfPointsWithinDistanceHistogram(data, settings, partitioningSettings, argsParser.args.numberOfBuckets)
 
       val triples = ExploratoryAnalysisHelper.convertHistogramToTriples(histogram)
@@ -54,10 +54,10 @@ object NumberOfPointsWithinDistanceDriver {
       clock.logTimeSinceStart("Calculation of number of points within " + distance)
     }
   }
-  
+
   /**
    * This method allows for the histogram to be created and used programmatically.
-   * 
+   *
    * Requires DbscanSettings to be set, because it must include value for epsilon.
    */
   def createNumberOfPointsWithinDistanceHistogram(
@@ -65,7 +65,7 @@ object NumberOfPointsWithinDistanceDriver {
     settings: DbscanSettings,
     partitioningSettings: PartitioningSettings = new PartitioningSettings(),
     numberOfBuckets: Int = -1) = {
-    
+
     val partitionedData = PointsPartitionedByBoxesRDD (data, partitioningSettings, settings)
     val distanceAnalyzer = new DistanceAnalyzer(settings)
     val closePoints = distanceAnalyzer.countClosePoints(partitionedData)
@@ -81,15 +81,15 @@ object NumberOfPointsWithinDistanceDriver {
       .keys
       .subtract(countsOfPointsWithNeighbors.keys)
       .map((_, 0L))
-    
+
     val allCounts = countsOfPointsWithNeighbors union countsOfPointsWithoutNeighbors
-    
+
     allCounts.persist()
-    
+
     val histogram = if(numberOfBuckets < 1) ExploratoryAnalysisHelper.calculateHistogram(allCounts) else ExploratoryAnalysisHelper.calculateHistogram(allCounts, numberOfBuckets)
-    
+
     allCounts.unpersist()
-    
+
     histogram
   }
 

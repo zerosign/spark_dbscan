@@ -6,7 +6,7 @@ import org.apache.hadoop.fs.Path
 
 private [dbscan] object DebugHelper {
 
-  def doAndSaveResult (sc: SparkContext, relativePath: String)(fn: String => Unit) {
+  def doAndSaveResult (sc: SparkContext, relativePath: String)(fn: String => Unit) : Unit = {
 
     val opt = sc.getConf.getOption (DebugHelper.DebugOutputPath)
 
@@ -16,7 +16,7 @@ private [dbscan] object DebugHelper {
     }
   }
 
-  def justDo (sc: SparkContext)(fn: => Unit) {
+  def justDo (sc: SparkContext)(fn: => Unit) : Unit = {
 
     val opt = sc.getConf.getOption (DebugHelper.DebugOutputPath)
 

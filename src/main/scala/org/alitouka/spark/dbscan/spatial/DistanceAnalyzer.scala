@@ -120,7 +120,7 @@ private [dbscan] class DistanceAnalyzer (
 
         val closePointsCount: Long = partitionIndex
           .findClosePoints(currentPoint._2)
-          .size
+          .size.toLong
 
         addPointCount(counts, currentPoint._1, closePointsCount)
       }

@@ -35,7 +35,7 @@ object IOHelper {
     * @param outputPath Path to a folder where results should be saved. The folder will contain multiple
     *                   partXXXX files
     */
-  def saveClusteringResult (model: DbscanModel, outputPath: String) {
+  def saveClusteringResult (model: DbscanModel, outputPath: String) : Unit = {
 
     model.allPoints.map ( pt => {
 
@@ -43,7 +43,7 @@ object IOHelper {
     } ).saveAsTextFile(outputPath)
   }
 
-  private [dbscan] def saveTriples (data: RDD[(Double, Double, Long)], outputPath: String) {
+  private [dbscan] def saveTriples (data: RDD[(Double, Double, Long)], outputPath: String) : Unit = {
     data.map ( x => x._1 + separator + x._2 + separator + x._3 ).saveAsTextFile(outputPath)
   }
 

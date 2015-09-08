@@ -22,7 +22,7 @@ object DistanceToNearestNeighborDriver extends DistanceCalculation {
     with NumberOfBucketsArgParsing [Args]
     with NumberOfPointsInPartitionParsing [Args]
 
-  def main (args: Array[String]) {
+  def main (args: Array[String]) : Unit = {
     val argsParser = new ArgsParser()
 
     if (argsParser.parse(args)) {
@@ -35,9 +35,9 @@ object DistanceToNearestNeighborDriver extends DistanceCalculation {
       val data = IOHelper.readDataset(sc, argsParser.args.inputPath)
       val settings = new DbscanSettings().withDistanceMeasure(argsParser.args.distanceMeasure)
       val partitioningSettings = new PartitioningSettings(numberOfPointsInBox = argsParser.args.numberOfPoints)
-      
+
       val histogram = createNearestNeighborHistogram(data, settings, partitioningSettings)
-      
+
       val triples = ExploratoryAnalysisHelper.convertHistogramToTriples(histogram)
 
       IOHelper.saveTriples(sc.parallelize(triples), argsParser.args.outputPath)
@@ -53,9 +53,9 @@ object DistanceToNearestNeighborDriver extends DistanceCalculation {
     data: RawDataSet,
     settings: DbscanSettings = new DbscanSettings(),
     partitioningSettings: PartitioningSettings = new PartitioningSettings()) = {
-    
+
     val partitionedData = PointsPartitionedByBoxesRDD(data, partitioningSettings)
-    
+
     val pointIdsWithDistances = partitionedData.mapPartitions {
       it =>
         {
